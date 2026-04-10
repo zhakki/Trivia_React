@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import type { Difficulty, QuizSettings, TriviaCategory } from '../types/trivia';
 
 interface Props {
@@ -46,7 +47,9 @@ export default function HomeScreen({
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Trivia Quiz</Text>
-        <Text style={styles.subtitle}>Кроссплатформенная викторина на React Native</Text>
+        <Text style={styles.subtitle}>
+          Кроссплатформенная викторина на React Native
+        </Text>
 
         <View style={styles.card}>
           <Text style={styles.label}>Имя игрока</Text>
@@ -62,51 +65,45 @@ export default function HomeScreen({
           {categoriesLoading ? (
             <ActivityIndicator size="small" />
           ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalList}>
-              <Pressable
-                style={[
-                  styles.optionChip,
-                  settings.categoryId === null && styles.optionChipActive,
-                ]}
-                onPress={() => onChangeCategory(null)}
-              >
-                <Text
-                  style={[
-                    styles.optionChipText,
-                    settings.categoryId === null && styles.optionChipTextActive,
-                  ]}
-                >
-                  Любая
-                </Text>
-              </Pressable>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={settings.categoryId ?? 0}
+                onValueChange={(itemValue) => {
+                  if (itemValue === 0) {
+                    onChangeCategory(null);
+                    return;
+                  }
 
-              {categories.map(category => (
-                <Pressable
-                  key={category.id}
-                  style={[
-                    styles.optionChip,
-                    settings.categoryId === category.id && styles.optionChipActive,
-                  ]}
-                  onPress={() => onChangeCategory(category)}
-                >
-                  <Text
-                    style={[
-                      styles.optionChipText,
-                      settings.categoryId === category.id && styles.optionChipTextActive,
-                    ]}
-                  >
-                    {category.name}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
+                  const selectedCategory =
+                    categories.find((category) => category.id === itemValue) ?? null;
+
+                  onChangeCategory(selectedCategory);
+                }}
+                style={styles.picker}
+              >
+                <Picker.Item label="Любая" value={0} />
+                {categories.map((category) => (
+                  <Picker.Item
+                    key={category.id}
+                    label={category.name}
+                    value={category.id}
+                  />
+                ))}
+              </Picker>
+            </View>
           )}
 
           <Text style={styles.label}>Сложность</Text>
           <View style={styles.rowWrap}>
-            {difficulties.map(item => {
+            {difficulties.map((item) => {
               const label =
-                item === '' ? 'Любая' : item === 'easy' ? 'Easy' : item === 'medium' ? 'Medium' : 'Hard';
+                item === ''
+                  ? 'Любая'
+                  : item === 'easy'
+                  ? 'Easy'
+                  : item === 'medium'
+                  ? 'Medium'
+                  : 'Hard';
 
               return (
                 <Pressable
@@ -132,7 +129,7 @@ export default function HomeScreen({
 
           <Text style={styles.label}>Количество вопросов</Text>
           <View style={styles.rowWrap}>
-            {questionCounts.map(item => (
+            {questionCounts.map((item) => (
               <Pressable
                 key={item}
                 style={[
@@ -155,7 +152,7 @@ export default function HomeScreen({
 
           <Text style={styles.label}>Время на вопрос</Text>
           <View style={styles.rowWrap}>
-            {timeOptions.map(item => (
+            {timeOptions.map((item) => (
               <Pressable
                 key={item}
                 style={[
@@ -177,7 +174,11 @@ export default function HomeScreen({
           </View>
         </View>
 
-        <Pressable style={styles.primaryButton} onPress={onStart} disabled={isStarting}>
+        <Pressable
+          style={[styles.primaryButton, isStarting && styles.primaryButtonDisabled]}
+          onPress={onStart}
+          disabled={isStarting}
+        >
           <Text style={styles.primaryButtonText}>
             {isStarting ? 'Загрузка...' : 'Начать викторину'}
           </Text>
@@ -215,7 +216,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     padding: 16,
-    gap: 12,
     shadowColor: '#000000',
     shadowOpacity: 0.06,
     shadowRadius: 8,
@@ -226,6 +226,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#25324A',
+    marginBottom: 8,
+    marginTop: 12,
   },
   input: {
     borderWidth: 1,
@@ -235,37 +237,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
+    color: '#172033',
   },
-  horizontalList: {
-    marginTop: 4,
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#D7DFEA',
+    backgroundColor: '#FAFCFF',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
-  optionChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
-    backgroundColor: '#E9EEF6',
-    marginRight: 8,
-  },
-  optionChipActive: {
-    backgroundColor: '#2E6BFF',
-  },
-  optionChipText: {
-    color: '#25324A',
-    fontWeight: '600',
-  },
-  optionChipTextActive: {
-    color: '#FFFFFF',
+  picker: {
+    color: '#172033',
   },
   rowWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    marginTop: 4,
   },
   choiceButton: {
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: '#E9EEF6',
+    marginRight: 10,
+    marginBottom: 10,
   },
   choiceButtonActive: {
     backgroundColor: '#2E6BFF',
@@ -273,6 +268,7 @@ const styles = StyleSheet.create({
   choiceButtonText: {
     fontWeight: '600',
     color: '#25324A',
+    fontSize: 15,
   },
   choiceButtonTextActive: {
     color: '#FFFFFF',
@@ -283,6 +279,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.7,
   },
   primaryButtonText: {
     color: '#FFFFFF',
