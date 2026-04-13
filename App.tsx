@@ -52,7 +52,7 @@ export default function App() {
         setCategories(loadedCategories);
       } catch (error) {
         console.error(error);
-        Alert.alert('Ошибка', 'Не удалось инициализировать приложение');
+        Alert.alert('Error', 'Failed to initialize the application');
       } finally {
         setCategoriesLoading(false);
         setAppReady(true);
@@ -76,7 +76,7 @@ export default function App() {
     }
 
     if (timeLeft <= 0) {
-      handleAnswer('Нет ответа');
+      handleAnswer('No answer');
       return;
     }
 
@@ -94,7 +94,7 @@ export default function App() {
       setLeaderboard(rows);
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', 'Не удалось загрузить таблицу лидеров');
+      Alert.alert('Error', 'Unable to load the leaderboard');
     } finally {
       setLeaderboardLoading(false);
     }
@@ -102,7 +102,7 @@ export default function App() {
 
   async function startQuiz() {
     if (!settings.playerName.trim()) {
-      Alert.alert('Внимание', 'Введите имя игрока');
+      Alert.alert('Attention', 'Enter player name');
       return;
     }
 
@@ -117,7 +117,7 @@ export default function App() {
       setScreen('quiz');
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', error instanceof Error ? error.message : 'Не удалось начать викторину');
+      Alert.alert('Error', error instanceof Error ? error.message : 'Unable to start the quiz');
     } finally {
       setStartingQuiz(false);
     }
@@ -147,7 +147,7 @@ export default function App() {
       await saveResult(finalResult);
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', 'Не удалось сохранить результат');
+      Alert.alert('Error', 'Failed to save result');
     }
 
     setResult(finalResult);
@@ -190,6 +190,31 @@ export default function App() {
   function goHome() {
     setScreen('home');
   }
+  function quitQuiz() {
+    Alert.alert(
+      'End the game?',
+      'Your progress will not be saved.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Exit',
+          style: 'destructive',
+          onPress: () => {
+            setQuestions([]);
+            setCurrentIndex(0);
+            setTimeLeft(settings.timePerQuestion);
+            setAnswers([]);
+            setStartedAt(null);
+            setResult(null);
+            setScreen('home');
+          },
+        },
+      ]
+    );
+  }
 
   function updateDifficulty(value: Difficulty | '') {
     setSettings(prev => ({ ...prev, difficulty: value }));
@@ -202,6 +227,7 @@ export default function App() {
       categoryName: category?.name ?? 'Any category',
     }));
   }
+
 
   if (!appReady) {
     return (
@@ -237,6 +263,7 @@ export default function App() {
         totalQuestions={questions.length}
         timeLeft={timeLeft}
         onAnswer={handleAnswer}
+        onQuit={quitQuiz}
       />
     );
   }
