@@ -1,6 +1,7 @@
-import React from 'react';
+import { Platform, StatusBar } from 'react-native';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -56,6 +57,11 @@ export default function HomeScreen({
             placeholder="Введите имя"
             style={styles.input}
             maxLength={30}
+            autoCorrect={false}
+            spellCheck={false}
+            autoComplete="off"
+            textContentType="none"
+            importantForAutofill="no"
           />
 
           <Text style={styles.label}>Категория</Text>
@@ -197,13 +203,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F7FB',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) + 18 : 18,
   },
   title: {
     fontSize: 30,
     fontWeight: '700',
     color: '#172033',
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 15,

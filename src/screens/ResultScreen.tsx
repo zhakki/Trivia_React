@@ -1,5 +1,13 @@
-import React from 'react';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
+import {
+    Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import type { QuizAnswer, QuizResultRecord } from '../types/trivia';
 
 interface Props {
@@ -19,47 +27,79 @@ export default function ResultScreen({
 }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.title}>Результаты</Text>
 
         <View style={styles.summaryCard}>
-          <Text style={styles.bigScore}>{result.score} / {result.totalQuestions}</Text>
+          <Text style={styles.bigScore}>
+            {result.score} / {result.totalQuestions}
+          </Text>
           <Text style={styles.percent}>{result.percentage.toFixed(0)}%</Text>
 
           <View style={styles.statsBox}>
             <Text style={styles.stat}>Игрок: {result.playerName}</Text>
             <Text style={styles.stat}>Категория: {result.category}</Text>
-            <Text style={styles.stat}>Сложность: {result.difficulty || 'any'}</Text>
+            <Text style={styles.stat}>
+              Сложность: {result.difficulty || 'any'}
+            </Text>
             <Text style={styles.stat}>Правильных: {result.correctAnswers}</Text>
             <Text style={styles.stat}>Неправильных: {result.incorrectAnswers}</Text>
             <Text style={styles.stat}>Время: {result.durationSeconds} сек</Text>
-            <Text style={styles.stat}>Дата: {new Date(result.finishedAt).toLocaleString()}</Text>
+            <Text style={styles.stat}>
+              Дата: {new Date(result.finishedAt).toLocaleString()}
+            </Text>
           </View>
         </View>
 
+        <View style={styles.actionsBox}>
+          <Pressable style={styles.primaryButton} onPress={onRestart}>
+            <Text style={styles.primaryButtonText}>Начать заново</Text>
+          </Pressable>
+
+          <Pressable style={styles.secondaryButton} onPress={onGoHome}>
+            <Text style={styles.secondaryButtonText}>Главное меню</Text>
+          </Pressable>
+
+          <Pressable style={styles.secondaryButton} onPress={onOpenLeaderboard}>
+            <Text style={styles.secondaryButtonText}>Таблица лидеров</Text>
+          </Pressable>
+        </View>
+
         <Text style={styles.sectionTitle}>Ответы</Text>
+
         {answers.map((item, index) => (
           <View key={`${item.question}-${index}`} style={styles.answerCard}>
-            <Text style={styles.answerQuestion}>{index + 1}. {item.question}</Text>
-            <Text style={styles.answerLine}>Ваш ответ: {item.selectedAnswer}</Text>
-            <Text style={styles.answerLine}>Правильный: {item.correctAnswer}</Text>
-            <Text style={[styles.answerStatus, item.isCorrect ? styles.correct : styles.incorrect]}>
-              {item.isCorrect ? 'Правильно' : 'Неправильно'}
+            <Text style={styles.answerQuestion}>
+              {index + 1}. {item.question}
             </Text>
+
+            <Text style={styles.answerLine}>
+              Ваш ответ: {item.selectedAnswer}
+            </Text>
+            <Text style={styles.answerLine}>
+              Правильный: {item.correctAnswer}
+            </Text>
+
+            <View
+              style={[
+                styles.statusBadge,
+                item.isCorrect ? styles.correctBadge : styles.incorrectBadge,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.statusText,
+                  item.isCorrect ? styles.correctText : styles.incorrectText,
+                ]}
+              >
+                {item.isCorrect ? 'Правильно' : 'Неправильно'}
+              </Text>
+            </View>
           </View>
         ))}
-
-        <Pressable style={styles.primaryButton} onPress={onRestart}>
-          <Text style={styles.primaryButtonText}>Начать заново</Text>
-        </Pressable>
-
-        <Pressable style={styles.secondaryButton} onPress={onOpenLeaderboard}>
-          <Text style={styles.secondaryButtonText}>Таблица лидеров</Text>
-        </Pressable>
-
-        <Pressable style={styles.secondaryButton} onPress={onGoHome}>
-          <Text style={styles.secondaryButtonText}>Главное меню</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -71,8 +111,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F7FB',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) + 18 : 18,
   },
   title: {
     fontSize: 30,
@@ -84,68 +125,95 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 18,
+    shadowColor: '#000000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   bigScore: {
-    fontSize: 34,
+    fontSize: 36,
     fontWeight: '800',
     color: '#172033',
     textAlign: 'center',
   },
   percent: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
     color: '#2E6BFF',
     textAlign: 'center',
     marginTop: 6,
-    marginBottom: 14,
+    marginBottom: 16,
   },
   statsBox: {
-    gap: 6,
+    gap: 8,
   },
   stat: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#42526B',
   },
+  actionsBox: {
+    marginBottom: 20,
+  },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: '#172033',
     marginBottom: 12,
   },
   answerCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
     marginBottom: 12,
+    shadowColor: '#000000',
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 1,
   },
   answerQuestion: {
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 28,
     fontWeight: '700',
     color: '#172033',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   answerLine: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#42526B',
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  answerStatus: {
-    marginTop: 6,
+  statusBadge: {
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  correctBadge: {
+    backgroundColor: '#E8F7EE',
+  },
+  incorrectBadge: {
+    backgroundColor: '#FDECEC',
+  },
+  statusText: {
     fontWeight: '700',
+    fontSize: 14,
   },
-  correct: {
+  correctText: {
     color: '#1D8F4E',
   },
-  incorrect: {
+  incorrectText: {
     color: '#D64545',
   },
   primaryButton: {
-    marginTop: 10,
     backgroundColor: '#2E6BFF',
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
+    marginBottom: 12,
   },
   primaryButtonText: {
     color: '#FFFFFF',
@@ -153,13 +221,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   secondaryButton: {
-    marginTop: 12,
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#D7DFEA',
+    marginBottom: 12,
   },
   secondaryButtonText: {
     color: '#25324A',

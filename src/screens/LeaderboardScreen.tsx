@@ -1,9 +1,11 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -19,9 +21,18 @@ interface Props {
 export default function LeaderboardScreen({ results, loading, onBack }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.title}>Таблица лидеров</Text>
-        <Text style={styles.subtitle}>Сортировка: score ↓, percentage ↓, duration ↑</Text>
+        <Text style={styles.subtitle}>
+          Сортировка: score ↓, percentage ↓, duration ↑
+        </Text>
+
+        <Pressable style={styles.backButtonTop} onPress={onBack}>
+          <Text style={styles.backButtonTopText}>Назад</Text>
+        </Pressable>
 
         {loading ? (
           <ActivityIndicator size="large" />
@@ -44,14 +55,16 @@ export default function LeaderboardScreen({ results, loading, onBack }: Props) {
                 <Text style={styles.metaText}>
                   {item.category} • {item.difficulty || 'any'}
                 </Text>
-                <Text style={styles.metaText}>{new Date(item.finishedAt).toLocaleString()}</Text>
+                <Text style={styles.metaText}>
+                  {new Date(item.finishedAt).toLocaleString()}
+                </Text>
               </View>
             </View>
           ))
         )}
 
-        <Pressable style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>Назад</Text>
+        <Pressable style={styles.backButtonBottom} onPress={onBack}>
+          <Text style={styles.backButtonBottomText}>Назад</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -64,8 +77,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F7FB',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) + 18 : 18,
   },
   title: {
     fontSize: 30,
@@ -76,7 +90,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#60708A',
     marginTop: 6,
-    marginBottom: 20,
+    marginBottom: 14,
+  },
+  backButtonTop: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderWidth: 1,
+    borderColor: '#D7DFEA',
+    marginBottom: 18,
+  },
+  backButtonTopText: {
+    color: '#25324A',
+    fontSize: 15,
+    fontWeight: '700',
   },
   emptyCard: {
     backgroundColor: '#FFFFFF',
@@ -122,7 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 2,
   },
-  backButton: {
+  backButtonBottom: {
     marginTop: 16,
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
@@ -131,7 +160,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D7DFEA',
   },
-  backButtonText: {
+  backButtonBottomText: {
     color: '#25324A',
     fontSize: 16,
     fontWeight: '700',
