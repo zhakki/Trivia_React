@@ -8,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import type { QuizResultRecord } from '../types/trivia';
@@ -25,20 +26,20 @@ export default function LeaderboardScreen({ results, loading, onBack }: Props) {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Таблица лидеров</Text>
+        <Text style={styles.title}>Leaderboard</Text>
         <Text style={styles.subtitle}>
-          Сортировка: score ↓, percentage ↓, duration ↑
+          Sorting: score ↓, percentage ↓, duration ↑
         </Text>
 
         <Pressable style={styles.backButtonTop} onPress={onBack}>
-          <Text style={styles.backButtonTopText}>Назад</Text>
+          <Text style={styles.backButtonTopText}>Back</Text>
         </Pressable>
 
         {loading ? (
           <ActivityIndicator size="large" />
         ) : results.length === 0 ? (
           <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>Пока нет сохранённых результатов</Text>
+            <Text style={styles.emptyText}>No results saved yetв</Text>
           </View>
         ) : (
           results.map((item, index) => (
@@ -64,7 +65,7 @@ export default function LeaderboardScreen({ results, loading, onBack }: Props) {
         )}
 
         <Pressable style={styles.backButtonBottom} onPress={onBack}>
-          <Text style={styles.backButtonBottomText}>Назад</Text>
+          <Text style={styles.backButtonBottomText}>Back</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
