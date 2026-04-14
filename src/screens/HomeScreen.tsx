@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Picker } from '@react-native-picker/picker';
 import type { Difficulty, QuizSettings, TriviaCategory } from '../types/trivia';
 
 interface Props {
@@ -29,6 +31,19 @@ const questionCounts = [5, 10, 15];
 const timeOptions = [10, 15, 20, 30];
 const difficulties: Array<Difficulty | ''> = ['', 'easy', 'medium', 'hard'];
 
+function getDifficultyLabel(value: Difficulty | ''): string {
+  switch (value) {
+    case 'easy':
+      return 'Easy';
+    case 'medium':
+      return 'Medium';
+    case 'hard':
+      return 'Hard';
+    default:
+      return 'Any';
+  }
+}
+
 export default function HomeScreen({
   settings,
   categories,
@@ -44,69 +59,61 @@ export default function HomeScreen({
 }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Trivia Quiz</Text>
         <Text style={styles.subtitle}>A cross-platform quiz built with React Native</Text>
 
         <View style={styles.card}>
-          <Text style={styles.label}>Player's name</Text>
+          <Text style={styles.label}>Player&apos;s name</Text>
           <TextInput
             value={settings.playerName}
             onChangeText={onChangePlayerName}
             placeholder="Enter your name"
             style={styles.input}
             maxLength={30}
+            autoCorrect={false}
+            spellCheck={false}
+            autoComplete="off"
+            importantForAutofill="no"
           />
 
           <Text style={styles.label}>Category</Text>
           {categoriesLoading ? (
             <ActivityIndicator size="small" />
           ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalList}>
-              <Pressable
-                style={[
-                  styles.optionChip,
-                  settings.categoryId === null && styles.optionChipActive,
-                ]}
-                onPress={() => onChangeCategory(null)}
-              >
-                <Text
-                  style={[
-                    styles.optionChipText,
-                    settings.categoryId === null && styles.optionChipTextActive,
-                  ]}
-                >
-                  Any
-                </Text>
-              </Pressable>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={settings.categoryId ?? 0}
+                onValueChange={(itemValue) => {
+                  if (itemValue === 0) {
+                    onChangeCategory(null);
+                    return;
+                  }
 
-              {categories.map(category => (
-                <Pressable
-                  key={category.id}
-                  style={[
-                    styles.optionChip,
-                    settings.categoryId === category.id && styles.optionChipActive,
-                  ]}
-                  onPress={() => onChangeCategory(category)}
-                >
-                  <Text
-                    style={[
-                      styles.optionChipText,
-                      settings.categoryId === category.id && styles.optionChipTextActive,
-                    ]}
-                  >
-                    {category.name}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
+                  const selectedCategory =
+                    categories.find((category) => category.id === itemValue) ?? null;
+
+                  onChangeCategory(selectedCategory);
+                }}
+                style={styles.picker}
+                dropdownIconColor="#25324A"
+              >
+                <Picker.Item label="Any" value={0} />
+                {categories.map((category) => (
+                  <Picker.Item
+                    key={category.id}
+                    label={category.name}
+                    value={category.id}
+                  />
+                ))}
+              </Picker>
+            </View>
           )}
 
           <Text style={styles.label}>Difficulty</Text>
           <View style={styles.rowWrap}>
-            {difficulties.map(item => {
-              const label =
-                item === '' ? 'Any' : item === 'easy' ? 'Easy' : item === 'medium' ? 'Medium' : 'Hard';
+            {difficulties.map((item) => {
+              const label = getDifficultyLabel(item);
 
               return (
                 <Pressable
@@ -132,7 +139,7 @@ export default function HomeScreen({
 
           <Text style={styles.label}>Question count</Text>
           <View style={styles.rowWrap}>
-            {questionCounts.map(item => (
+            {questionCounts.map((item) => (
               <Pressable
                 key={item}
                 style={[
@@ -155,7 +162,7 @@ export default function HomeScreen({
 
           <Text style={styles.label}>Time for a question</Text>
           <View style={styles.rowWrap}>
-            {timeOptions.map(item => (
+            {timeOptions.map((item) => (
               <Pressable
                 key={item}
                 style={[
@@ -177,7 +184,11 @@ export default function HomeScreen({
           </View>
         </View>
 
-        <Pressable style={styles.primaryButton} onPress={onStart} disabled={isStarting}>
+        <Pressable
+          style={[styles.primaryButton, isStarting && styles.primaryButtonDisabled]}
+          onPress={onStart}
+          disabled={isStarting}
+        >
           <Text style={styles.primaryButtonText}>
             {isStarting ? 'Loading...' : 'Start the quiz'}
           </Text>
@@ -197,13 +208,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F7FB',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
+    paddingTop: Platform.OS === 'android' ? 44 : 24,
   },
   title: {
     fontSize: 30,
     fontWeight: '700',
     color: '#172033',
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 15,
@@ -215,7 +228,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     padding: 16,
-    gap: 12,
     shadowColor: '#000000',
     shadowOpacity: 0.06,
     shadowRadius: 8,
@@ -226,46 +238,41 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#25324A',
+    marginBottom: 8,
+    marginTop: 12,
   },
   input: {
     borderWidth: 1,
     borderColor: '#D7DFEA',
-    backgroundColor: '#FAFCFF',
+    backgroundColor: '#ECEBFA',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
+    color: '#172033',
   },
-  horizontalList: {
-    marginTop: 4,
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#D7DFEA',
+    backgroundColor: '#FAFCFF',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
-  optionChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
-    backgroundColor: '#E9EEF6',
-    marginRight: 8,
-  },
-  optionChipActive: {
-    backgroundColor: '#2E6BFF',
-  },
-  optionChipText: {
-    color: '#25324A',
-    fontWeight: '600',
-  },
-  optionChipTextActive: {
-    color: '#FFFFFF',
+  picker: {
+    color: '#172033',
   },
   rowWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    marginTop: 4,
   },
   choiceButton: {
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: '#E9EEF6',
+    marginRight: 10,
+    marginBottom: 10,
   },
   choiceButtonActive: {
     backgroundColor: '#2E6BFF',
@@ -273,6 +280,7 @@ const styles = StyleSheet.create({
   choiceButtonText: {
     fontWeight: '600',
     color: '#25324A',
+    fontSize: 15,
   },
   choiceButtonTextActive: {
     color: '#FFFFFF',
@@ -283,6 +291,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.7,
   },
   primaryButtonText: {
     color: '#FFFFFF',
