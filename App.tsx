@@ -299,9 +299,6 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-const loadedCategories = await fetchCategories();
-console.log('CATEGORIES:', loadedCategories.length, loadedCategories);
-setCategories(loadedCategories);
 
 const styles = StyleSheet.create({
   loadingArea: {
