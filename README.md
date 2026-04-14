@@ -1,11 +1,10 @@
 # Trivia Quiz App
 
-A cross-platform mobile quiz application built with **React Native**, **Expo**, **TypeScript**, **SQLite**, and the **Open Trivia DB API**.
+## Description
 
-## Project overview
+**Trivia Quiz App** is a cross-platform mobile quiz application built with **React Native**, **Expo**, **TypeScript**, **SQLite**, and the **Open Trivia DB API**.
 
-This application allows the user to:
-
+The application allows the user to:
 - enter a player name
 - choose a quiz category
 - choose a difficulty level
@@ -13,61 +12,61 @@ This application allows the user to:
 - choose time per question
 - answer questions one by one
 - see the final result
-- save results in a local SQLite database
-- view saved results in the leaderboard
+- save quiz results in a local SQLite database
+- open the leaderboard with saved records
 
-The app loads quiz questions from the Trivia API and stores the quiz results locally using SQLite.
-
----
-
-## Main features
-
-### Question loading
-- Questions are loaded from the Trivia API
-- The user can choose a question category
-- The user can choose a difficulty level
-- Questions may be multiple choice or true/false
-
-### App screens
-- Home screen
-- Quiz screen
-- Results screen
-- Leaderboard screen
-
-### Quiz flow
-1. The user selects a category, difficulty, number of questions, and time limit
-2. The user answers questions one by one
-3. After the last question, the app shows the final result
-4. The user can restart the quiz
-
-### Additional functionality
-- Timer for each question
-- Leaderboard with saved results
-- SQLite database for storing results
+The app loads quiz questions from the Trivia API and stores results locally using SQLite.
 
 ---
 
-## Data stored in SQLite
+## Main functionality
 
-The application stores the following result data:
+### Quiz settings
+The user can:
+- enter a player name
+- choose a category
+- choose a difficulty level
+- choose the number of questions
+- choose the time limit for each question
 
-- player name
+### Quiz process
+- questions are displayed one by one
+- each question has answer options
+- a timer is shown for every question
+- after the last question, the app shows the result
+- the user can restart the quiz
+
+### Results
+The application shows:
 - score
 - percentage
-- date and time
-- duration in seconds
 - total number of questions
 - correct answers
 - incorrect answers
-- selected category
-- selected difficulty
-- answers in JSON format
+- quiz duration
+- date and time
+- all selected answers
 
-Database file:
-- `quiz-results.db`
+### Leaderboard
+The leaderboard stores and displays saved quiz results.
 
-Table:
-- `results`
+---
+
+## Screens
+
+The application contains the following screens:
+
+- **Home Screen**  
+  Main menu with player name input, category selection, difficulty selection, number of questions, time per question, start button, and leaderboard button.
+
+- **Quiz Screen**  
+  Questions are shown one by one with answer buttons and a timer.
+
+- **Result Screen**  
+  Displays the final quiz result and detailed answers.
+
+- **Leaderboard Screen**  
+  Displays saved results from the SQLite database.
 
 ---
 
@@ -83,9 +82,35 @@ Table:
 
 ---
 
+## Database
+
+The application uses a local SQLite database.
+
+### Database file
+- `quiz-results.db`
+
+### Table
+- `results`
+
+### Stored data
+The application stores:
+- player name
+- score
+- percentage
+- date and time
+- duration in seconds
+- total number of questions
+- correct answers
+- incorrect answers
+- selected category
+- selected difficulty
+- answers in JSON format
+
+---
+
 ## Project structure
 
-
+```text
 QuizApp/
 ├─ App.tsx
 └─ src/
@@ -100,185 +125,206 @@ QuizApp/
    │  └─ triviaApi.ts
    └─ types/
       └─ trivia.ts
-
-
-
-## Requirements
+```
+# Requirements
 
 Before running the project, make sure the following tools are installed.
 
-Required
-Node.js
-npm
-Git
-For Android testing
-Android Studio
-Android SDK
-Android Emulator
-For iOS testing on macOS
-Xcode
-Xcode Command Line Tools
-iOS Simulator
-Installation from scratch
+### Required for all users
+-Node.js
+-npm
+-Git
 
-'''This section is written for a user who has nothing installed yet.
+### Required for Android testing
+-Android Studio
+-Android SDK
+-Android Emulator
+### Required for iOS testing on macOS
+-Xcode
+-Xcode Command Line Tools
+-iOS Simulator
 
+## Installation and setup
 ## 1. Install Node.js
 
-Install the current LTS version of Node.js from the official Node.js website.
-''' 
+Install the current LTS version of Node.js.
+
 After installation, check:
+
+```
 node -v
 npm -v
-
+```
 ## 2. Install Git
 
-Install Git and check:
+Check if Git is installed:
 
---version
-
+```
+git --version
+```
 ## 3. Install Android Studio
 
-Install Android Studio.
+Install Android Studio if you want to run the project on Android.
 
-Then:
+1. Open Android Studio
+2. Install Android SDK if needed
+3. Open Device Manager
+4. Create an emulator
+5. Start the Android emulator
 
-Open Android Studio
-Install Android SDK if prompted
-Open Device Manager
-Create an Android virtual device
-Start the emulator
 ## 4. Install Xcode (macOS only)
 
-Install Xcode from the App Store.
-
-Then:
-
-Open Xcode once
-Accept the license if needed
-Go to:
+Install Xcode if you want to run the project on iOS.
+1. Open Xcode
+2. Accept the license if needed
+3. Open:
+```
 Xcode > Settings > Locations
-Select Command Line Tools
-Go to:
+```
+4. Select Command Line Tools
+5. Open:
+```
 Xcode > Settings > Components
-Download an iOS Simulator if needed
+```
+6. Install an iOS Simulator if needed
 
 ## 5. Clone the repository
-
-Replace the repository link with your own GitHub link:
-
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
-
-Example:
-
+```
 git clone https://github.com/zhakki/Trivia_React.git
 cd Trivia_React
+```
 ## 6. Install project dependencies
 
 Run:
-
+```
 npm install
+```
 
-This installs all dependencies listed in package.json.
+This command installs all dependencies from package.json.
+
+You do not need to install React Native, Expo SQLite, Picker, or Safe Area Context manually one by one if you are running the existing repository.
+
+Main dependencies used in this project:
+
+-expo
+-react
+-react-native
+-expo-sqlite
+-react-native-safe-area-context
+-@react-native-picker/picker
 
 ## 7. Start the Expo development server
 
 Run:
-
+```
 npx expo start
-
-If you need to clear the cache:
-
+```
+If needed, clear the cache:
+```
 npx expo start --clear
-Run the project on Android
-Start the Android emulator in Android Studio
-In the project folder run:
+```
+# Run the application on Android
+1. Start the Android emulator in Android Studio
+2. In the project folder run:
+```
 npx expo start
-After Expo starts, press:
+```
+3. After Expo starts, press:
+```
 a
-
+```
 This opens the application on Android.
 
-Run the project on iOS
+# Run the application on iOS
 
 Only available on macOS.
-
-Make sure Xcode and iOS Simulator are installed
-In the project folder run:
+1. Make sure Xcode and iOS Simulator are installed
+2. In the project folder run:
+ ```
 npx expo start
-After Expo starts, press:
+```
+3. After Expo starts, press:
+```
 i
-
+```
 This opens the application in the iOS Simulator.
 
-Useful commands
-
-Start Expo:
-
+# Useful commands
+Start Expo
+```
 npx expo start
-
-Start Expo and clear cache:
-
+```
+Start Expo and clear cache
+```
 npx expo start --clear
-
-Install dependencies again:
-
+```
+Install dependencies again
+```
 npm install
-
-Check git status:
-
+```
+Check project status
+```
 git status
-How the application works
-### Home screen
+```
+# How to use the application
+## Step 1. Open the Home Screen
 
-The user can:
+The user opens the application and sees the main menu.
 
-enter a player name
-choose a category
-choose a difficulty level
-choose the number of questions
-choose time per question
-start the quiz
-open the leaderboard
+## Step 2. Enter player name
 
-### Quiz screen
-Questions are shown one by one
-The user selects an answer
-A timer is shown for each question
-The app moves through all questions
+The user enters a name in the input field.
 
-### Results screen
+## Step 3. Choose quiz settings
 
-After the quiz ends, the app shows:
+The user selects:
+- category
+- difficulty
+- number of questions
+- time per question
 
-total score
-percentage
-player name
-category
-difficulty
-correct answers
-incorrect answers
-duration
-date and time
-all selected answers
+## Step 4. Start the quiz
 
-### Leaderboard screen
+The user presses Start the quiz.
 
-The leaderboard displays saved results from SQLite.
+## Step 5. Answer the questions
 
-## Database logic
+Questions are displayed one by one.
+The user selects an answer for each question.
 
-The SQLite database is handled in:
+## Step 6. View the result
 
+After the quiz ends, the application shows:
+- score
+- percentage
+- total answers
+- correct and incorrect answers
+- quiz duration
+- detailed answer list
+  
+## Step 7. Open the leaderboard
+
+The user can open the leaderboard and see saved results.
+
+# How the database works
+
+The SQLite database logic is stored in:
+
+```
 src/database/db.ts
+```
 
 This file:
+- opens the database
+- creates the results table
+- saves quiz results
+- loads saved records for the leaderboard
 
-opens the database
-creates the results table
-inserts quiz results
-loads leaderboard records
-## API
-
+# API
 Questions are loaded from the Open Trivia DB API.
+
+# Repository
+https://github.com/zhakki/Trivia_React
+Author
+Name: zhakki
+Project: Trivia Quiz App
