@@ -1,5 +1,7 @@
+
 import React from 'react';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { QuizAnswer, QuizResultRecord } from '../types/trivia';
 
 interface Props {
@@ -20,45 +22,45 @@ export default function ResultScreen({
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Результаты</Text>
+        <Text style={styles.title}>Results</Text>
 
         <View style={styles.summaryCard}>
           <Text style={styles.bigScore}>{result.score} / {result.totalQuestions}</Text>
           <Text style={styles.percent}>{result.percentage.toFixed(0)}%</Text>
 
           <View style={styles.statsBox}>
-            <Text style={styles.stat}>Игрок: {result.playerName}</Text>
-            <Text style={styles.stat}>Категория: {result.category}</Text>
-            <Text style={styles.stat}>Сложность: {result.difficulty || 'any'}</Text>
-            <Text style={styles.stat}>Правильных: {result.correctAnswers}</Text>
-            <Text style={styles.stat}>Неправильных: {result.incorrectAnswers}</Text>
-            <Text style={styles.stat}>Время: {result.durationSeconds} сек</Text>
-            <Text style={styles.stat}>Дата: {new Date(result.finishedAt).toLocaleString()}</Text>
+            <Text style={styles.stat}>Player: {result.playerName}</Text>
+            <Text style={styles.stat}>Category: {result.category}</Text>
+            <Text style={styles.stat}>Difficulty: {result.difficulty || 'any'}</Text>
+            <Text style={styles.stat}>Correct: {result.correctAnswers}</Text>
+            <Text style={styles.stat}>Incorrect: {result.incorrectAnswers}</Text>
+            <Text style={styles.stat}>Time: {result.durationSeconds} sec</Text>
+            <Text style={styles.stat}>Date: {new Date(result.finishedAt).toLocaleString()}</Text>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Ответы</Text>
+        <Text style={styles.sectionTitle}>Answers</Text>
         {answers.map((item, index) => (
           <View key={`${item.question}-${index}`} style={styles.answerCard}>
             <Text style={styles.answerQuestion}>{index + 1}. {item.question}</Text>
-            <Text style={styles.answerLine}>Ваш ответ: {item.selectedAnswer}</Text>
-            <Text style={styles.answerLine}>Правильный: {item.correctAnswer}</Text>
+            <Text style={styles.answerLine}>Your answer: {item.selectedAnswer}</Text>
+            <Text style={styles.answerLine}>Correct: {item.correctAnswer}</Text>
             <Text style={[styles.answerStatus, item.isCorrect ? styles.correct : styles.incorrect]}>
-              {item.isCorrect ? 'Правильно' : 'Неправильно'}
+              {item.isCorrect ? 'Correct' : 'Incorrect'}
             </Text>
           </View>
         ))}
 
         <Pressable style={styles.primaryButton} onPress={onRestart}>
-          <Text style={styles.primaryButtonText}>Начать заново</Text>
+          <Text style={styles.primaryButtonText}>Start over</Text>
         </Pressable>
 
         <Pressable style={styles.secondaryButton} onPress={onOpenLeaderboard}>
-          <Text style={styles.secondaryButtonText}>Таблица лидеров</Text>
+          <Text style={styles.secondaryButtonText}>Leaderboard</Text>
         </Pressable>
 
         <Pressable style={styles.secondaryButton} onPress={onGoHome}>
-          <Text style={styles.secondaryButtonText}>Главное меню</Text>
+          <Text style={styles.secondaryButtonText}>Main Menu</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
