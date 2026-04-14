@@ -85,7 +85,7 @@ Table:
 
 ## Project structure
 
-```text
+
 QuizApp/
 ├─ App.tsx
 └─ src/
@@ -100,3 +100,185 @@ QuizApp/
    │  └─ triviaApi.ts
    └─ types/
       └─ trivia.ts
+
+
+
+## Requirements
+
+Before running the project, make sure the following tools are installed.
+
+Required
+Node.js
+npm
+Git
+For Android testing
+Android Studio
+Android SDK
+Android Emulator
+For iOS testing on macOS
+Xcode
+Xcode Command Line Tools
+iOS Simulator
+Installation from scratch
+
+'''This section is written for a user who has nothing installed yet.
+
+## 1. Install Node.js
+
+Install the current LTS version of Node.js from the official Node.js website.
+''' 
+After installation, check:
+node -v
+npm -v
+
+## 2. Install Git
+
+Install Git and check:
+
+--version
+
+## 3. Install Android Studio
+
+Install Android Studio.
+
+Then:
+
+Open Android Studio
+Install Android SDK if prompted
+Open Device Manager
+Create an Android virtual device
+Start the emulator
+## 4. Install Xcode (macOS only)
+
+Install Xcode from the App Store.
+
+Then:
+
+Open Xcode once
+Accept the license if needed
+Go to:
+Xcode > Settings > Locations
+Select Command Line Tools
+Go to:
+Xcode > Settings > Components
+Download an iOS Simulator if needed
+
+## 5. Clone the repository
+
+Replace the repository link with your own GitHub link:
+
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+cd YOUR_REPOSITORY
+
+Example:
+
+git clone https://github.com/zhakki/Trivia_React.git
+cd Trivia_React
+## 6. Install project dependencies
+
+Run:
+
+npm install
+
+This installs all dependencies listed in package.json.
+
+## 7. Start the Expo development server
+
+Run:
+
+npx expo start
+
+If you need to clear the cache:
+
+npx expo start --clear
+Run the project on Android
+Start the Android emulator in Android Studio
+In the project folder run:
+npx expo start
+After Expo starts, press:
+a
+
+This opens the application on Android.
+
+Run the project on iOS
+
+Only available on macOS.
+
+Make sure Xcode and iOS Simulator are installed
+In the project folder run:
+npx expo start
+After Expo starts, press:
+i
+
+This opens the application in the iOS Simulator.
+
+Useful commands
+
+Start Expo:
+
+npx expo start
+
+Start Expo and clear cache:
+
+npx expo start --clear
+
+Install dependencies again:
+
+npm install
+
+Check git status:
+
+git status
+How the application works
+### Home screen
+
+The user can:
+
+enter a player name
+choose a category
+choose a difficulty level
+choose the number of questions
+choose time per question
+start the quiz
+open the leaderboard
+
+### Quiz screen
+Questions are shown one by one
+The user selects an answer
+A timer is shown for each question
+The app moves through all questions
+
+### Results screen
+
+After the quiz ends, the app shows:
+
+total score
+percentage
+player name
+category
+difficulty
+correct answers
+incorrect answers
+duration
+date and time
+all selected answers
+
+### Leaderboard screen
+
+The leaderboard displays saved results from SQLite.
+
+## Database logic
+
+The SQLite database is handled in:
+
+src/database/db.ts
+
+This file:
+
+opens the database
+creates the results table
+inserts quiz results
+loads leaderboard records
+## API
+
+Questions are loaded from the Open Trivia DB API.
