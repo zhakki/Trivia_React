@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, ActivityIndicator, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Alert, ActivityIndicator, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { initDB, getTopResults, saveResult } from './src/database/db';
 import HomeScreen from './src/screens/HomeScreen';
 import LeaderboardScreen from './src/screens/LeaderboardScreen';
@@ -52,7 +53,7 @@ export default function App() {
         setCategories(loadedCategories);
       } catch (error) {
         console.error(error);
-        Alert.alert('Ошибка', 'Не удалось инициализировать приложение');
+        Alert.alert('Error', 'Failed to initialize the application');
       } finally {
         setCategoriesLoading(false);
         setAppReady(true);
@@ -76,7 +77,7 @@ export default function App() {
     }
 
     if (timeLeft <= 0) {
-      handleAnswer('Нет ответа');
+      handleAnswer('No answer');
       return;
     }
 
@@ -94,7 +95,7 @@ export default function App() {
       setLeaderboard(rows);
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', 'Не удалось загрузить таблицу лидеров');
+      Alert.alert('Error', 'Failed to load leaderboard');
     } finally {
       setLeaderboardLoading(false);
     }
@@ -102,7 +103,7 @@ export default function App() {
 
   async function startQuiz() {
     if (!settings.playerName.trim()) {
-      Alert.alert('Внимание', 'Введите имя игрока');
+      Alert.alert('Attention', 'Enter player name');
       return;
     }
 
@@ -117,7 +118,7 @@ export default function App() {
       setScreen('quiz');
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', error instanceof Error ? error.message : 'Не удалось начать викторину');
+      Alert.alert('Error', error instanceof Error ? error.message : 'The quiz could not be started');
     } finally {
       setStartingQuiz(false);
     }
@@ -147,7 +148,7 @@ export default function App() {
       await saveResult(finalResult);
     } catch (error) {
       console.error(error);
-      Alert.alert('Ошибка', 'Не удалось сохранить результат');
+      Alert.alert('Error', 'Failed to save result');
     }
 
     setResult(finalResult);
@@ -191,6 +192,32 @@ export default function App() {
     setScreen('home');
   }
 
+  function quitQuiz() {
+    Alert.alert(
+      'End the game?',
+      'Current progress will not be saved.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Exit',
+          style: 'destructive',
+          onPress: () => {
+            setQuestions([]);
+            setCurrentIndex(0);
+            setTimeLeft(settings.timePerQuestion);
+            setAnswers([]);
+            setStartedAt(null);
+            setResult(null);
+            setScreen('home');
+          },
+        },
+      ]
+    );
+  }
+
   function updateDifficulty(value: Difficulty | '') {
     setSettings(prev => ({ ...prev, difficulty: value }));
   }
@@ -203,71 +230,75 @@ export default function App() {
     }));
   }
 
-  if (!appReady) {
-    return (
-      <SafeAreaView style={styles.loadingArea}>
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
+  function renderScreen() {
+    if (screen === 'home') {
+      return (
+        <HomeScreen
+          settings={settings}
+          categories={categories}
+          categoriesLoading={categoriesLoading}
+          isStarting={startingQuiz}
+          onChangePlayerName={value => setSettings(prev => ({ ...prev, playerName: value }))}
+          onChangeCategory={updateCategory}
+          onChangeDifficulty={updateDifficulty}
+          onChangeAmount={value => setSettings(prev => ({ ...prev, amount: value }))}
+          onChangeTimePerQuestion={value => setSettings(prev => ({ ...prev, timePerQuestion: value }))}
+          onStart={startQuiz}
+          onOpenLeaderboard={openLeaderboard}
+        />
+      );
+    }
+
+    if (screen === 'quiz' && currentQuestion) {
+      return (
+        <QuizScreen
+          question={currentQuestion}
+          currentIndex={currentIndex}
+          totalQuestions={questions.length}
+          timeLeft={timeLeft}
+          onAnswer={handleAnswer}
+          onQuit={quitQuiz}
+        />
+      );
+    }
+
+    if (screen === 'result' && result) {
+      return (
+        <ResultScreen
+          result={result}
+          answers={answers}
+          onRestart={restartWithSameSettings}
+          onGoHome={goHome}
+          onOpenLeaderboard={openLeaderboard}
+        />
+      );
+    }
+
+    if (screen === 'leaderboard') {
+      return (
+        <LeaderboardScreen
+          results={leaderboard}
+          loading={leaderboardLoading}
+          onBack={goHome}
+        />
+      );
+    }
+
+    return <View />;
   }
 
-  if (screen === 'home') {
-    return (
-      <HomeScreen
-        settings={settings}
-        categories={categories}
-        categoriesLoading={categoriesLoading}
-        isStarting={startingQuiz}
-        onChangePlayerName={value => setSettings(prev => ({ ...prev, playerName: value }))}
-        onChangeCategory={updateCategory}
-        onChangeDifficulty={updateDifficulty}
-        onChangeAmount={value => setSettings(prev => ({ ...prev, amount: value }))}
-        onChangeTimePerQuestion={value => setSettings(prev => ({ ...prev, timePerQuestion: value }))}
-        onStart={startQuiz}
-        onOpenLeaderboard={openLeaderboard}
-      />
-    );
-  }
-
-  if (screen === 'quiz' && currentQuestion) {
-    return (
-      <QuizScreen
-        question={currentQuestion}
-        currentIndex={currentIndex}
-        totalQuestions={questions.length}
-        timeLeft={timeLeft}
-        onAnswer={handleAnswer}
-      />
-    );
-  }
-
-  if (screen === 'result' && result) {
-    return (
-      <ResultScreen
-        result={result}
-        answers={answers}
-        onRestart={restartWithSameSettings}
-        onGoHome={goHome}
-        onOpenLeaderboard={openLeaderboard}
-      />
-    );
-  }
-
-  if (screen === 'leaderboard') {
-    return (
-      <LeaderboardScreen
-        results={leaderboard}
-        loading={leaderboardLoading}
-        onBack={goHome}
-      />
-    );
-  }
-
-  return <View />;
+  return (
+    <SafeAreaProvider>
+      {!appReady ? (
+        <SafeAreaView style={styles.loadingArea}>
+          <ActivityIndicator size="large" />
+        </SafeAreaView>
+      ) : (
+        renderScreen()
+      )}
+    </SafeAreaProvider>
+  );
 }
-const loadedCategories = await fetchCategories();
-console.log('CATEGORIES:', loadedCategories.length, loadedCategories);
-setCategories(loadedCategories);
 
 const styles = StyleSheet.create({
   loadingArea: {

@@ -1,14 +1,15 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import type { Difficulty, QuizSettings, TriviaCategory } from '../types/trivia';
 
@@ -30,6 +31,19 @@ const questionCounts = [5, 10, 15];
 const timeOptions = [10, 15, 20, 30];
 const difficulties: Array<Difficulty | ''> = ['', 'easy', 'medium', 'hard'];
 
+function getDifficultyLabel(value: Difficulty | ''): string {
+  switch (value) {
+    case 'easy':
+      return 'Easy';
+    case 'medium':
+      return 'Medium';
+    case 'hard':
+      return 'Hard';
+    default:
+      return 'Any';
+  }
+}
+
 export default function HomeScreen({
   settings,
   categories,
@@ -45,23 +59,25 @@ export default function HomeScreen({
 }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Trivia Quiz</Text>
-        <Text style={styles.subtitle}>
-          Кроссплатформенная викторина на React Native
-        </Text>
+        <Text style={styles.subtitle}>A cross-platform quiz built with React Native</Text>
 
         <View style={styles.card}>
-          <Text style={styles.label}>Имя игрока</Text>
+          <Text style={styles.label}>Player&apos;s name</Text>
           <TextInput
             value={settings.playerName}
             onChangeText={onChangePlayerName}
-            placeholder="Введите имя"
+            placeholder="Enter your name"
             style={styles.input}
             maxLength={30}
+            autoCorrect={false}
+            spellCheck={false}
+            autoComplete="off"
+            importantForAutofill="no"
           />
 
-          <Text style={styles.label}>Категория</Text>
+          <Text style={styles.label}>Category</Text>
           {categoriesLoading ? (
             <ActivityIndicator size="small" />
           ) : (
@@ -80,8 +96,9 @@ export default function HomeScreen({
                   onChangeCategory(selectedCategory);
                 }}
                 style={styles.picker}
+                dropdownIconColor="#25324A"
               >
-                <Picker.Item label="Любая" value={0} />
+                <Picker.Item label="Any" value={0} />
                 {categories.map((category) => (
                   <Picker.Item
                     key={category.id}
@@ -93,17 +110,10 @@ export default function HomeScreen({
             </View>
           )}
 
-          <Text style={styles.label}>Сложность</Text>
+          <Text style={styles.label}>Difficulty</Text>
           <View style={styles.rowWrap}>
             {difficulties.map((item) => {
-              const label =
-                item === ''
-                  ? 'Любая'
-                  : item === 'easy'
-                  ? 'Easy'
-                  : item === 'medium'
-                  ? 'Medium'
-                  : 'Hard';
+              const label = getDifficultyLabel(item);
 
               return (
                 <Pressable
@@ -127,7 +137,7 @@ export default function HomeScreen({
             })}
           </View>
 
-          <Text style={styles.label}>Количество вопросов</Text>
+          <Text style={styles.label}>Question count</Text>
           <View style={styles.rowWrap}>
             {questionCounts.map((item) => (
               <Pressable
@@ -150,7 +160,7 @@ export default function HomeScreen({
             ))}
           </View>
 
-          <Text style={styles.label}>Время на вопрос</Text>
+          <Text style={styles.label}>Time for a question</Text>
           <View style={styles.rowWrap}>
             {timeOptions.map((item) => (
               <Pressable
@@ -167,7 +177,7 @@ export default function HomeScreen({
                     settings.timePerQuestion === item && styles.choiceButtonTextActive,
                   ]}
                 >
-                  {item} сек
+                  {item} sec
                 </Text>
               </Pressable>
             ))}
@@ -180,12 +190,12 @@ export default function HomeScreen({
           disabled={isStarting}
         >
           <Text style={styles.primaryButtonText}>
-            {isStarting ? 'Загрузка...' : 'Начать викторину'}
+            {isStarting ? 'Loading...' : 'Start the quiz'}
           </Text>
         </Pressable>
 
         <Pressable style={styles.secondaryButton} onPress={onOpenLeaderboard}>
-          <Text style={styles.secondaryButtonText}>Таблица лидеров</Text>
+          <Text style={styles.secondaryButtonText}>Leaderboard</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -198,13 +208,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F7FB',
   },
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
+    paddingTop: Platform.OS === 'android' ? 44 : 24,
   },
   title: {
     fontSize: 30,
     fontWeight: '700',
     color: '#172033',
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 15,
@@ -232,7 +244,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#D7DFEA',
-    backgroundColor: '#FAFCFF',
+    backgroundColor: '#ECEBFA',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,

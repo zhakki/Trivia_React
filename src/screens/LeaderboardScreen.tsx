@@ -2,12 +2,12 @@ import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { QuizResultRecord } from '../types/trivia';
 
 interface Props {
@@ -20,14 +20,14 @@ export default function LeaderboardScreen({ results, loading, onBack }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Таблица лидеров</Text>
-        <Text style={styles.subtitle}>Сортировка: score ↓, percentage ↓, duration ↑</Text>
+        <Text style={styles.title}>Leaderboard</Text>
+        <Text style={styles.subtitle}>Sorting by: score ↓, percentage ↓, duration ↑</Text>
 
         {loading ? (
           <ActivityIndicator size="large" />
         ) : results.length === 0 ? (
           <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>Пока нет сохранённых результатов</Text>
+            <Text style={styles.emptyText}>No results saved yet</Text>
           </View>
         ) : (
           results.map((item, index) => (
@@ -51,7 +51,7 @@ export default function LeaderboardScreen({ results, loading, onBack }: Props) {
         )}
 
         <Pressable style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>Назад</Text>
+          <Text style={styles.backButtonText}>Back</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
