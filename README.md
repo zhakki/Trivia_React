@@ -17,8 +17,6 @@ The application allows the user to:
 
 The app loads quiz questions from the Trivia API and stores results locally using SQLite.
 
----
-
 ## Main functionality
 
 ### Quiz settings
@@ -50,8 +48,6 @@ The application shows:
 ### Leaderboard
 The leaderboard stores and displays saved quiz results.
 
----
-
 ## Screens
 
 The application contains the following screens:
@@ -68,8 +64,6 @@ The application contains the following screens:
 - **Leaderboard Screen**  
   Displays saved results from the SQLite database.
 
----
-
 ## Technologies used
 
 - React Native
@@ -79,8 +73,6 @@ The application contains the following screens:
 - Open Trivia DB API
 - react-native-safe-area-context
 - @react-native-picker/picker
-
----
 
 ## Database
 
@@ -105,8 +97,6 @@ The application stores:
 - selected category
 - selected difficulty
 - answers in JSON format
-
----
 
 ## Project structure
 
@@ -136,13 +126,13 @@ Before running the project, make sure the following tools are installed.
 -Git
 
 ### Required for Android testing
--Android Studio
--Android SDK
--Android Emulator
+- Android Studio
+- Android SDK
+- Android Emulator
 ### Required for iOS testing on macOS
--Xcode
--Xcode Command Line Tools
--iOS Simulator
+- Xcode
+- Xcode Command Line Tools
+- iOS Simulator
 
 ## Installation and setup
 ## 1. Install Node.js
@@ -206,12 +196,12 @@ You do not need to install React Native, Expo SQLite, Picker, or Safe Area Conte
 
 Main dependencies used in this project:
 
--expo
--react
--react-native
--expo-sqlite
--react-native-safe-area-context
--@react-native-picker/picker
+- expo
+- react
+- react-native
+- expo-sqlite
+- react-native-safe-area-context
+- @react-native-picker/picker
 
 ## 7. Start the Expo development server
 
@@ -295,12 +285,12 @@ The user selects an answer for each question.
 ## Step 6. View the result
 
 After the quiz ends, the application shows:
-- score
-- percentage
-- total answers
-- correct and incorrect answers
-- quiz duration
-- detailed answer list
+-  score
+-  percentage
+-  total answers
+-  correct and incorrect answers
+-  quiz duration
+-  detailed answer list
   
 ## Step 7. Open the leaderboard
 
